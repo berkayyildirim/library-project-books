@@ -85,4 +85,16 @@ router.post("/books/:bookId/edit", (req, res, next) => {
     });
 });
 
+//DELETE
+router.post("/books/:bookId/delete", (req, res, next) => {
+  Book.findByIdAndDelete(req.params.bookId)
+    .then(() => {
+      res.redirect("/books");
+    })
+    .catch((err) => {
+      console.log("Error deleting book...", err);
+      next();
+    });
+});
+
 module.exports = router;
