@@ -23,6 +23,7 @@ router.get("/books/:bookId", (req, res, next) => {
   const id = req.params.bookId;
 
   Book.findById(id)
+    .populate("author")
     .then((bookDetails) => {
       res.render("books/book-details", bookDetails);
     })
