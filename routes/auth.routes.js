@@ -15,6 +15,15 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const { email, password } = req.body;
 
+  const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+  if (!regex.test(password)) {
+    res.status(400).render("auth/signup", {
+      errorMessage:
+        "Password needs to have at least 6 chars and must contain at least one number, one lowercase and one uppercase letter.",
+    });
+    return;
+  }
+
   bcryptjs
     .genSalt(saltRounds)
     .then((salt) => {
