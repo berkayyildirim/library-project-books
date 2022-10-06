@@ -1,4 +1,5 @@
 const bcryptjs = require("bcryptjs");
+const mongoose = require("mongoose");
 const User = require("../models/User.model");
 
 const router = require("express").Router();
@@ -31,8 +32,15 @@ router.post("/signup", (req, res, next) => {
       res.redirect("/");
     })
     .catch((e) => {
-      console.log("error creating user account", e);
-      next(e);
+      if (e instanceof mongoose.Error.ValidationError) {
+        res.status(400).render("auth/signup", { errorMessage: e.message });
+      } else if (e.code === 11000) {
+        res
+          .status(400)
+          .render("auth/signup", { errorMessage: "Email already in use" });
+      } else {
+        next(e);
+      }
     });
 });
 
